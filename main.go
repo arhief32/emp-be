@@ -8,9 +8,12 @@ import (
 
 	"github.com/arhief32/emp-be/config"
 	"github.com/arhief32/emp-be/middleware"
+	"github.com/arhief32/emp-be/v1/controllers"
 	v1controllers "github.com/arhief32/emp-be/v1/controllers"
+	"github.com/arhief32/emp-be/v1/repositories"
 	v1repositories "github.com/arhief32/emp-be/v1/repositories"
 	v1routers "github.com/arhief32/emp-be/v1/routers"
+	"github.com/arhief32/emp-be/v1/services"
 	v1services "github.com/arhief32/emp-be/v1/services"
 )
 
@@ -26,16 +29,19 @@ func main() {
 	}
 
 	// repositories
+	submissionRepo := repositories.NewMerchantSubmissionRepository(db)
 	authRepo := v1repositories.NewAuthRepository(db)
 	empRepo := v1repositories.NewEmployeeRepository(db)
 	reportRepo := v1repositories.NewReportRepository(db)
 
 	// services
+	submissionService := services.NewMerchantSubmissionService(submissionRepo)
 	authSvc := v1services.NewAuthService(authRepo, cfg)
 	empSvc := v1services.NewEmployeeService(empRepo)
 	reportSvc := v1services.NewReportService(reportRepo, empRepo)
 
 	// controllers
+	submissionController := controllers.NewMerchantSubmissionController(submissionService)
 	authCtrl := v1controllers.NewAuthController(authSvc)
 	empCtrl := v1controllers.NewEmployeeController(empSvc)
 	reportCtrl := v1controllers.NewReportController(reportSvc)
@@ -49,6 +55,7 @@ func main() {
 	v1routers.RegisterAuthRoutes(r, authCtrl, authMw)
 	v1routers.RegisterEmployeeRoutes(r, empCtrl, authMw)
 	v1routers.RegisterReportRoutes(r, reportCtrl, authMw)
+	v1routers.RegisterMerchantSubmissionRoutes(r, submissionController, authMw)
 
 	port := cfg.Port
 	if port == "" {

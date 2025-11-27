@@ -39,7 +39,7 @@ func (s *authService) Register(req entities.RegisterRequest) error {
 	user := models.User{
 		Username: req.Username,
 		Password: string(hash),
-		Fullname: req.Fullname,
+		Name:     req.Name,
 	}
 
 	return s.repo.Create(&user)
@@ -55,11 +55,15 @@ func (s *authService) Login(req entities.LoginRequest) (string, *models.User, er
 		return "", nil, errors.New("password salah")
 	}
 
+	// determine role
+	role := "MAKER"
+
 	// generate JWT
 	claims := jwt.MapClaims{
-		"sub": user.ID,
-		"usr": user.Username,
-		"exp": time.Now().Add(time.Duration(s.cfg.JWTExpHours) * time.Hour).Unix(),
+		"sub":  user.ID,
+		"usr":  user.Username,
+		"role": role,
+		"exp":  time.Now().Add(time.Duration(s.cfg.JWTExpHours) * time.Hour).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

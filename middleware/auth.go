@@ -58,6 +58,24 @@ func (m *JWTMiddleware) HandlerFunc() gin.HandlerFunc {
 	}
 }
 
+// simple role middleware helper (local to router file)
+// you can move to middleware package if preferred
+func (m *JWTMiddleware) RequireRole(role string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		r, _ := c.Get("role")
+		if r == nil {
+			c.AbortWithStatusJSON(403, gin.H{"error": "forbidden"})
+			return
+		}
+		rs, ok := r.(string)
+		if !ok || rs != role {
+			c.AbortWithStatusJSON(403, gin.H{"error": "forbidden"})
+			return
+		}
+		c.Next()
+	}
+}
+
 // shorthand for using middleware in routers
 func (m *JWTMiddleware) Gin() gin.HandlerFunc {
 	return m.HandlerFunc()

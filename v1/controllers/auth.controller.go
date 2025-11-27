@@ -64,7 +64,7 @@ func (ctr *AuthController) Profile(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"user_id":    user.ID,
 		"username":   user.Username,
-		"fullname":   user.Fullname,
+		"name":       user.Name,
 		"created_at": user.CreatedAt,
 	})
 }
