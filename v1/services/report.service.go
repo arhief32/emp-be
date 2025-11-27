@@ -3,8 +3,8 @@ package services
 import (
 	"time"
 
-	"github.com/yourusername/pegawai-api/v1/models"
-	"github.com/yourusername/pegawai-api/v1/repositories"
+	"github.com/arhief32/emp-be/v1/models"
+	"github.com/arhief32/emp-be/v1/repositories"
 )
 
 type ReportService interface {

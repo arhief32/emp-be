@@ -4,9 +4,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/yourusername/pegawai-api/v1/entities"
-	"github.com/yourusername/pegawai-api/v1/models"
-	"github.com/yourusername/pegawai-api/v1/repositories"
+	"github.com/arhief32/emp-be/v1/entities"
+	"github.com/arhief32/emp-be/v1/models"
+	"github.com/arhief32/emp-be/v1/repositories"
 )
 
 type EmployeeService interface {
@@ -31,13 +31,13 @@ func (s *employeeService) GetAll() ([]models.Employee, error) {
 
 func (s *employeeService) Create(req entities.EmployeeCreateRequest) (models.Employee, error) {
 	// basic validation
-	if req.NIP == "" || req.Nama == "" {
+	if req.Nip == "" || req.Nama == "" {
 		return models.Employee{}, errors.New("nama and nip required")
 	}
 	now := time.Now()
 	e := models.Employee{
 		Nama:      req.Nama,
-		NIP:       req.NIP,
+		Nip:       req.Nip,
 		Jabatan:   req.Jabatan,
 		CreatedAt: now,
 		UpdatedAt: now,
@@ -58,8 +58,8 @@ func (s *employeeService) Update(id uint, req entities.EmployeeUpdateRequest) er
 	if req.Nama != "" {
 		e.Nama = req.Nama
 	}
-	if req.NIP != "" {
-		e.NIP = req.NIP
+	if req.Nip != "" {
+		e.Nip = req.Nip
 	}
 	if req.Jabatan != "" {
 		e.Jabatan = req.Jabatan

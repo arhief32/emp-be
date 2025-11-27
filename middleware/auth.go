@@ -1,13 +1,14 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 
-	"github.com/yourusername/pegawai-api/config"
+	"github.com/arhief32/emp-be/config"
 )
 
 type JWTMiddleware struct {
@@ -48,9 +49,10 @@ func (m *JWTMiddleware) HandlerFunc() gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "invalid token claims"})
 			return
 		}
-		// set user id if provided
-		if sub, ok := claims["sub"]; ok {
-			c.Set("user_id", sub)
+		fmt.Println(claims)
+		if sub, ok := claims["sub"].(float64); ok {
+			c.Set("user_id", int(sub))
+			c.Set("username", claims["usr"])
 		}
 		c.Next()
 	}

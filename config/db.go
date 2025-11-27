@@ -6,6 +6,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/arhief32/emp-be/v1/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -60,5 +61,8 @@ func InitDB(cfg *Config) *gorm.DB {
 // AutoMigrate models
 func AutoMigrate(db *gorm.DB) error {
 	// import models to migrate
-	return db.AutoMigrate(&Employee{}, &DailyReport{})
+	return db.AutoMigrate(
+		&models.User{},
+		&models.Employee{},
+		&models.DailyReport{})
 }

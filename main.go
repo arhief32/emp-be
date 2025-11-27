@@ -26,14 +26,17 @@ func main() {
 	}
 
 	// repositories
+	authRepo := v1repositories.NewAuthRepository(db)
 	empRepo := v1repositories.NewEmployeeRepository(db)
 	reportRepo := v1repositories.NewReportRepository(db)
 
 	// services
+	authSvc := v1services.NewAuthService(authRepo, cfg)
 	empSvc := v1services.NewEmployeeService(empRepo)
 	reportSvc := v1services.NewReportService(reportRepo, empRepo)
 
 	// controllers
+	authCtrl := v1controllers.NewAuthController(authSvc)
 	empCtrl := v1controllers.NewEmployeeController(empSvc)
 	reportCtrl := v1controllers.NewReportController(reportSvc)
 
@@ -43,6 +46,7 @@ func main() {
 	authMw := middleware.NewJWTMiddleware(cfg)
 
 	// register v1 routes
+	v1routers.RegisterAuthRoutes(r, authCtrl, authMw)
 	v1routers.RegisterEmployeeRoutes(r, empCtrl, authMw)
 	v1routers.RegisterReportRoutes(r, reportCtrl, authMw)
 
