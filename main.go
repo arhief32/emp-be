@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 
 	"github.com/arhief32/emp-be/config"
 	"github.com/arhief32/emp-be/middleware"
@@ -19,7 +18,7 @@ import (
 
 func main() {
 	// load .env if exists
-	_ = godotenv.Load()
+	config.InitEnv()
 
 	cfg := config.NewConfigFromEnv()
 	db := config.InitDB(cfg)
