@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RoleRoutes(r *gin.Engine, ctrl *controllers.RoleController, authMw *middleware.JWTMiddleware) {
+func RegisterRoleRoutes(r *gin.Engine, ctrl *controllers.RoleController, authMw *middleware.JWTMiddleware) {
 	route := r.Group("/v1/roles")
 	{
 		route.POST("/", ctrl.Create)

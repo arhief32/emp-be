@@ -27,34 +27,41 @@ func main() {
 		log.Fatalf("migrate error: %v", err)
 	}
 
-	// repositories
-	submissionRepo := repositories.NewMerchantSubmissionRepository(db)
+	// auth
 	authRepo := v1repositories.NewAuthRepository(db)
-	empRepo := v1repositories.NewEmployeeRepository(db)
-	reportRepo := v1repositories.NewReportRepository(db)
-
-	// services
-	submissionService := services.NewMerchantSubmissionService(submissionRepo)
 	authSvc := v1services.NewAuthService(authRepo, cfg)
-	empSvc := v1services.NewEmployeeService(empRepo)
-	reportSvc := v1services.NewReportService(reportRepo, empRepo)
-
-	// controllers
-	submissionController := controllers.NewMerchantSubmissionController(submissionService)
 	authCtrl := v1controllers.NewAuthController(authSvc)
+
+	// role
+	roleRepo := repositories.NewRoleRepository(db)
+	roleSvc := services.NewRoleService(roleRepo)
+	roleCtrl := controllers.NewRoleController(roleSvc)
+
+	// merchant
+	submissionRepo := repositories.NewMerchantSubmissionRepository(db)
+	submissionSvc := services.NewMerchantSubmissionService(submissionRepo)
+	submissionCtrl := controllers.NewMerchantSubmissionController(submissionSvc)
+
+	// employee
+	empRepo := v1repositories.NewEmployeeRepository(db)
+	empSvc := v1services.NewEmployeeService(empRepo)
 	empCtrl := v1controllers.NewEmployeeController(empSvc)
+
+	// report
+	reportRepo := v1repositories.NewReportRepository(db)
+	reportSvc := v1services.NewReportService(reportRepo, empRepo)
 	reportCtrl := v1controllers.NewReportController(reportSvc)
 
 	// gin router
 	r := gin.Default()
-	// middleware init (uses cfg)
 	authMw := middleware.NewJWTMiddleware(cfg)
 
 	// register v1 routes
 	v1routers.RegisterAuthRoutes(r, authCtrl, authMw)
+	v1routers.RegisterRoleRoutes(r, roleCtrl, authMw)
 	v1routers.RegisterEmployeeRoutes(r, empCtrl, authMw)
 	v1routers.RegisterReportRoutes(r, reportCtrl, authMw)
-	v1routers.RegisterMerchantSubmissionRoutes(r, submissionController, authMw)
+	v1routers.RegisterMerchantSubmissionRoutes(r, submissionCtrl, authMw)
 
 	port := cfg.Port
 	if port == "" {

@@ -63,6 +63,9 @@ func AutoMigrate(db *gorm.DB) error {
 	// import models to migrate
 	return db.AutoMigrate(
 		&models.User{},
+		&models.Role{},
+		&models.MerchantSubmission{},
+		&models.Merchant{},
 		&models.Employee{},
 		&models.DailyReport{})
 }
